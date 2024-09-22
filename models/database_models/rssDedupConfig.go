@@ -9,6 +9,7 @@ type RssDedupConfig struct {
 	FeedIDLength               	int
 	FeedIDFromStartOrEndLength 	int
 	FeedIconURL 			    string
+	ArtikelImageTag				string
 }
 
 func CreateNewRssDedupConfig() RssDedupConfig {

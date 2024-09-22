@@ -1,12 +1,13 @@
 package Configuration
 
 type Configuration struct {
-	Server                    string            `json:"server"`
-	Port                      int               `json:"port"`
-	Database                  string            `json:"database"`
-	User                      string            `json:"user"`
-	Pass                      string            `json:"pass"`
-	SSLMode                 string            `json:"sslmode"`
+	DatabaseServer            string            `json:"DatabaseServer"`
+	DatabasePort              int               `json:"DatabasePort"`
+	DatabaseName              string            `json:"DatabaseName"`
+	DatabaseUser              string            `json:"DatabaseUser"`
+	DatabasePassword          string            `json:"DatabasePassword"`
+	SSLMode                   string            `json:"sslmode"`
+	HttpServerPort            string            `json:"HttpServerPort"`
 	Err                       string
 }
 

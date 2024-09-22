@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	options := []string{"List Table rssFeedItemIDS", "List Table rssDedupConfig", "Add new Configuration", "Exit"}
+	options := []string{"List Table rssFeedItemIDS", "List Table rssDedupConfig", "Add new Configuration", "Delete Configuration", "Exit"}
 	pterm.Printfln("Please provide the path to the config file:")
 	configFilePath, _ := pterm.DefaultInteractiveTextInput.WithDefaultValue("config.json").Show()
 	pterm.Println()
@@ -27,7 +27,7 @@ func main() {
 
 	connStr := fmt.Sprintf("host=%s port=%d user=%s "+
     "password=%s dbname=%s sslmode=%s",
-    configuration.Server, configuration.Port, configuration.User, configuration.Pass, configuration.Database, configuration.SSLMode)
+    configuration.DatabaseServer, configuration.DatabasePort, configuration.DatabaseUser, configuration.DatabasePassword, configuration.DatabaseName, configuration.SSLMode)
 
 	checkTableRssFeedItemIDS := `
 	CREATE TABLE  IF NOT EXISTS rssFeedItemIDS (
@@ -46,7 +46,8 @@ func main() {
 		feedIDFromStartOrEnd TEXT NOT NULL,
 		feedIDLength INTEGER NOT NULL,
 		feedIDFromStartOrEndLength INTEGER NOT NULL,
-		feedIconURL TEXT NOT NULL
+		feedIconURL TEXT NOT NULL,
+		artikelImageTag TEXT NOT NULL
 		);
 	`
 
@@ -59,12 +60,12 @@ func main() {
 		pterm.Fatal.PrintOnError(err)
 	}
 
-	err = DatabaseFunctions.CreateTables(checkTableRssFeedItemIDS, db)
+	err = DatabaseFunctions.ExecSQLStatement(checkTableRssFeedItemIDS, db)
 	if err != nil {
 		pterm.Fatal.PrintOnError(err)
 	}
 
-	err = DatabaseFunctions.CreateTables(checkTableRssDedupConfig, db)
+	err = DatabaseFunctions.ExecSQLStatement(checkTableRssDedupConfig, db)
 	if err != nil {
 		pterm.Fatal.PrintOnError(err)
 	} 
@@ -93,11 +94,11 @@ func main() {
 					pterm.Fatal.PrintOnError(err)
 				} 
 				selectResult := pterm.TableData{
-					{"Id", "HttpEndpoint", "FeedName", "FeedURL", "FeedIDFromStartOrEnd", "FeedIDLength", "FeedIDFromStartOrEndLength", "FeedIconURL"},
+					{"Id", "HttpEndpoint", "FeedName", "FeedURL", "FeedIDFromStartOrEnd", "FeedIDLength", "FeedIDFromStartOrEndLength", "FeedIconURL", "artikelImageTag"},
 				}
 		
 				for _, sqlLine := range lines {
-					newTableLine := []string{strconv.Itoa(sqlLine.Id), sqlLine.HttpEndpoint, sqlLine.FeedName, sqlLine.FeedURL, sqlLine.FeedIDFromStartOrEnd, strconv.Itoa(sqlLine.FeedIDLength), strconv.Itoa(sqlLine.FeedIDFromStartOrEndLength), sqlLine.FeedIconURL}
+					newTableLine := []string{strconv.Itoa(sqlLine.Id), sqlLine.HttpEndpoint, sqlLine.FeedName, sqlLine.FeedURL, sqlLine.FeedIDFromStartOrEnd, strconv.Itoa(sqlLine.FeedIDLength), strconv.Itoa(sqlLine.FeedIDFromStartOrEndLength), sqlLine.FeedIconURL, sqlLine.ArtikelImageTag}
 					selectResult = append(selectResult, newTableLine)
 				}
 		
@@ -141,7 +142,24 @@ func main() {
 				result, _ = pterm.DefaultInteractiveTextInput.Show()
 				newConfig.FeedIconURL = result
 
+				pterm.Println("Please enter ArtikelImageTag:")
+				result, _ = pterm.DefaultInteractiveTextInput.Show()
+				newConfig.ArtikelImageTag = result
+
 				DatabaseFunctions.InsertNewConfig(newConfig, db)
+				if err != nil {
+					pterm.Fatal.PrintOnError(err)
+				} else {
+					pterm.Println("Config successful added")
+				}
+
+			case "Delete Configuration":
+				pterm.Println("Please enter ArtikelImageTag:")
+				result, _ := pterm.DefaultInteractiveTextInput.Show()
+
+				deleteStatemen := "DELETE FROM rssDedupConfig WHERE id = $1"
+
+				DatabaseFunctions.ExecSQLDeleteStatement(deleteStatemen, result, db)
 				if err != nil {
 					pterm.Fatal.PrintOnError(err)
 				} else {

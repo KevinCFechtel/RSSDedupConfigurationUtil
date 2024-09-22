@@ -16,7 +16,8 @@ func ReadTableContentOfRssDedupConfig(db *sql.DB) ([]DBModels.RssDedupConfig, er
 			feedIDFromStartOrEnd,
 			feedIDLength,
 			feedIDFromStartOrEndLength,
-			feedIconURL
+			feedIconURL,
+			artikelImageTag
 		FROM rssDedupConfig 
 		ORDER BY id`)
 	if err != nil {
@@ -25,7 +26,7 @@ func ReadTableContentOfRssDedupConfig(db *sql.DB) ([]DBModels.RssDedupConfig, er
 	defer rows.Close()
 	for rows.Next() {
 		newRow := DBModels.CreateNewRssDedupConfig()
-		err := rows.Scan(&newRow.Id, &newRow.HttpEndpoint, &newRow.FeedName, &newRow.FeedURL, &newRow.FeedIDFromStartOrEnd, &newRow.FeedIDLength, &newRow.FeedIDFromStartOrEndLength, &newRow.FeedIconURL)
+		err := rows.Scan(&newRow.Id, &newRow.HttpEndpoint, &newRow.FeedName, &newRow.FeedURL, &newRow.FeedIDFromStartOrEnd, &newRow.FeedIDLength, &newRow.FeedIDFromStartOrEndLength, &newRow.FeedIconURL, &newRow.ArtikelImageTag)
 		if err != nil {
 			return nil, err
 		}

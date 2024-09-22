@@ -1,8 +1,9 @@
 {
-	"server":"localhost",
-	"port":5432,
-    "database":"miniflux",
-	"user":"miniflux",
-	"pass":"miniflux",
-	"sslmode":"disable"
+	"DatabaseServer":"localhost",
+	"DatabasePort":5432,
+    "DatabaseName":"miniflux",
+	"DatabaseUser":"miniflux",
+	"DatabasePassword":"miniflux",
+	"sslmode":"disable",
+    "HttpServerPort":"127.0.0.1:3333"
 }
